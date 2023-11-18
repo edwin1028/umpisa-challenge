@@ -18,6 +18,14 @@ class UserController {
         );
 
         try {
+            const user = await AppDataSource.getRepository(User).findOneBy({
+                email,
+            });
+
+            if (user) {
+                throw new Error("Email already exist.");
+            }
+
             await AppDataSource.getRepository(User).save({
                 email,
                 password: salted,
@@ -26,11 +34,7 @@ class UserController {
 
             res.status(200).json(["SUCCESS", "User created.", {}]); // status, message, data
         } catch (error) {
-            res.status(400).json([
-                "FAIL",
-                `UserController: create ERROR || ${error}`,
-                error,
-            ]);
+            res.status(400).json(["FAIL", (error as any).message, error]);
         }
     }
 
