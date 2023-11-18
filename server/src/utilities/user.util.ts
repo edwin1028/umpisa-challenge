@@ -14,3 +14,11 @@ export const randomizeSalt = () => {
         encryptedSalt,
     };
 };
+
+export const decrypt = (str: string, secretKey: string) => {
+    return CryptoJS.AES.decrypt(str, secretKey).toString(CryptoJS.enc.Utf8);
+};
+
+export const hash = (str: string, secretKey: string) => {
+    return CryptoJS.HmacSHA256(str, secretKey).toString(CryptoJS.enc.Hex);
+};
