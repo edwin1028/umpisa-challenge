@@ -21,6 +21,14 @@ AppDataSource.initialize()
                 secret: process.env.SESSION_KEY as string,
                 resave: false,
                 saveUninitialized: true,
+                name: "sid",
+                cookie: {
+                    secure: process.env.NODE_ENV === "production",
+                    httpOnly: true,
+                    maxAge: 1000 * 60 * 60, // '1hr'
+                    sameSite:
+                        process.env.NODE_ENV === "production" ? "none" : "lax",
+                },
             })
         );
         app.use(routePrefix, router);
