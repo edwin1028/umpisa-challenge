@@ -1,9 +1,8 @@
-import { User } from "../entity/User";
 import CryptoJS from "crypto-js";
-import { Request, Response, NextFunction } from "express";
-import { randomizeSalt } from "../utilities";
+import { NextFunction, Request, Response } from "express";
 import { AppDataSource } from "../data-source";
-import moment from "moment-timezone";
+import { User } from "../entity/User";
+import { randomizeSalt } from "../utilities";
 
 class UserController {
     ds: any;

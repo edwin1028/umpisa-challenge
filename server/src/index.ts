@@ -6,11 +6,9 @@ import "reflect-metadata";
 import { AppDataSource } from "./data-source";
 
 dotenv.config();
-
 AppDataSource.initialize()
     .then(() => {
         console.log("Data Source has been initialized!");
-
         const app: Application = express();
         const port = process.env.PORT || 8000;
         const routePrefix = process.env.API_V1 || "/api/v1";
