@@ -5,12 +5,6 @@ import { User } from "../entity/User";
 import { decrypt, hash, randomizeSalt } from "../utilities";
 
 class UserController {
-    ds: any;
-
-    constructor() {
-        this.ds = AppDataSource;
-    }
-
     async get(req: Request, res: Response, next: NextFunction) {
         res.status(200).json("UserController get works!");
     }
@@ -24,7 +18,7 @@ class UserController {
         );
 
         try {
-            const result = await AppDataSource.getRepository(User).save({
+            await AppDataSource.getRepository(User).save({
                 email,
                 password: salted,
                 salt: encryptedSalt,
