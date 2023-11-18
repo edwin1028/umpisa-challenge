@@ -4,6 +4,7 @@ import express, { Application } from "express";
 import router from "./routes";
 import "reflect-metadata";
 import { AppDataSource } from "./data-source";
+import session from "express-session";
 
 dotenv.config();
 AppDataSource.initialize()
@@ -15,6 +16,13 @@ AppDataSource.initialize()
 
         app.use(cors());
         app.use(express.json());
+        app.use(
+            session({
+                secret: process.env.SESSION_KEY as string,
+                resave: false,
+                saveUninitialized: true,
+            })
+        );
         app.use(routePrefix, router);
 
         app.listen(port, () => {

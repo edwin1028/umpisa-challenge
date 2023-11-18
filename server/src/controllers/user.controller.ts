@@ -3,6 +3,8 @@ import { NextFunction, Request, Response } from "express";
 import { AppDataSource } from "../data-source";
 import { User } from "../entity/User";
 import { decrypt, hash, randomizeSalt } from "../utilities";
+import jwt from "jsonwebtoken";
+import { ISession } from "../interfaces/session.interface";
 
 class UserController {
     async get(req: Request, res: Response, next: NextFunction) {
@@ -67,10 +69,18 @@ class UserController {
                     throw new Error("Username or password does not match.");
                 }
 
+                const token = jwt.sign(
+                    { id: validatedUser.id, email },
+                    process.env.JWT_KEY as string,
+                    {
+                        expiresIn: "1h",
+                    }
+                );
+                (req.session as ISession).token = token;
                 res.status(200).json([
                     "SUCCESS",
                     `Welcome back ${validatedUser.email}!`,
-                    validatedUser,
+                    { ...validatedUser },
                 ]); // status, message, data
             } else {
                 throw new Error("Username or password does not match.");
