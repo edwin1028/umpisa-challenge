@@ -18,7 +18,7 @@ import Typography from "@mui/material/Typography";
 import * as React from "react";
 import { AuthContextType } from "../../types/authcontext.type";
 import { AuthContext } from "../../provider/Auth.provider";
-import { Outlet } from "react-router-dom";
+import { Navigate, Outlet } from "react-router-dom";
 
 const drawerWidth = 240;
 
@@ -84,7 +84,7 @@ export default function MainPage(props: Props) {
     const container =
         window !== undefined ? () => window().document.body : undefined;
 
-    return (
+    return authContext?.isLoggedIn ? (
         <Box sx={{ display: "flex" }}>
             <CssBaseline />
             <AppBar
@@ -170,5 +170,7 @@ export default function MainPage(props: Props) {
                 <Outlet />
             </Box>
         </Box>
+    ) : (
+        <Navigate to="/login" />
     );
 }

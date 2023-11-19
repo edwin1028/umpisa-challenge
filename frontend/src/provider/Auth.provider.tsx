@@ -10,12 +10,16 @@ export const AuthProvider = ({ children }: any) => {
     const navigate = useNavigate();
 
     const checkIfLoggedIn = async () => {
-        const { data: response } = await httpGet(`/user/login`);
-        const [status, message, data] = response;
-        if (data) {
-            setIsLoggedIn(true);
-            navigate("/dashboard");
-        } else {
+        try {
+            const { data: response } = await httpGet(`/user/login`);
+            const [status, message, data] = response;
+            if (data) {
+                setIsLoggedIn(true);
+                navigate("/dashboard");
+            } else {
+                setIsLoggedIn(false);
+            }
+        } catch (error) {
             setIsLoggedIn(false);
         }
     };
