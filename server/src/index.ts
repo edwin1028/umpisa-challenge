@@ -14,12 +14,17 @@ AppDataSource.initialize()
         const port = process.env.PORT || 8000;
         const routePrefix = process.env.API_V1 || "/api/v1";
 
-        app.use(cors());
+        app.use(
+            cors({
+                origin: "http://localhost:3000",
+                credentials: true,
+            })
+        );
         app.use(express.json());
         app.use(
             session({
                 secret: process.env.SESSION_KEY as string,
-                resave: false,
+                resave: true,
                 saveUninitialized: true,
                 name: "sid",
                 cookie: {

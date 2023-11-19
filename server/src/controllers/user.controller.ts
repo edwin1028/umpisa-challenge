@@ -76,7 +76,12 @@ class UserController {
                         expiresIn: "1h",
                     }
                 );
+                
                 (req.session as ISession).token = token;
+                (req.session as ISession).user = {
+                    id: validatedUser.id,
+                    email: validatedUser.email,
+                };
                 res.status(200).json([
                     "SUCCESS",
                     `Welcome back ${validatedUser.email}!`,

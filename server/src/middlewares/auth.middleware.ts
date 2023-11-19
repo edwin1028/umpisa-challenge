@@ -25,19 +25,16 @@ const Auth = (req: any, res: Response, next: NextFunction) => {
 
     jwt.verify(
         token,
-        process.env.SESSION_KEY as string,
+        process.env.JWT_KEY as string,
         (err: any, user: any) => {
             if (err) {
                 return res.status(401).json(["Access Forbidden"]);
             }
 
-            console.log("user -> ", user);
             req.user = user;
             next();
         }
     );
-
-    next();
 };
 
 export default Auth;
