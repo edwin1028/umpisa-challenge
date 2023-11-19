@@ -9,6 +9,7 @@ import ErrorPage from "../pages/Main/Error/ErrorPage";
 import LoginPage from "../pages/Landing/Login/LoginPage";
 import { ProtectedRoute } from "./ProtectedRoute";
 import { AuthLayout } from "../provider/AuthLayout";
+import DashboardPage from "../pages/Main/Dashboard/DashboardPage";
 
 const router = createBrowserRouter(
     createRoutesFromElements(
@@ -22,7 +23,11 @@ const router = createBrowserRouter(
                     />
                     <Route
                         path="dashboard"
-                        element={<ProtectedRoute>Hello world!</ProtectedRoute>}
+                        element={
+                            <ProtectedRoute>
+                                <DashboardPage />
+                            </ProtectedRoute>
+                        }
                     />
                 </Route>
 
