@@ -1,3 +1,3 @@
-import { randomizeSalt } from "./user.util";
+import { randomizeSalt, decrypt, hash } from "./user.util";
 
-export { randomizeSalt };
+export { randomizeSalt, decrypt, hash };

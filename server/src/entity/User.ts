@@ -17,7 +17,7 @@ export class User {
     @Column({ select: false })
     password!: string;
 
-    @Column({ select: false })
+    @Column()
     salt!: string;
 
     @Column({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" })

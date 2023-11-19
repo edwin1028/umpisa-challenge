@@ -4,6 +4,7 @@ import express, { Application } from "express";
 import router from "./routes";
 import "reflect-metadata";
 import { AppDataSource } from "./data-source";
+import session from "express-session";
 
 dotenv.config();
 AppDataSource.initialize()
@@ -13,8 +14,29 @@ AppDataSource.initialize()
         const port = process.env.PORT || 8000;
         const routePrefix = process.env.API_V1 || "/api/v1";
 
-        app.use(cors());
+        app.use(
+            cors({
+                origin: "http://localhost:3000",
+                credentials: true,
+            })
+        );
         app.use(express.json());
+        app.use(
+            session({
+                secret: process.env.SESSION_KEY as string,
+                resave: false,
+                saveUninitialized: false,
+                name: "sid",
+                unset: "destroy",
+                cookie: {
+                    secure: process.env.NODE_ENV === "production",
+                    httpOnly: true,
+                    maxAge: 1000 * 60 * 60, // '1hr'
+                    sameSite:
+                        process.env.NODE_ENV === "production" ? "none" : "lax",
+                },
+            })
+        );
         app.use(routePrefix, router);
 
         app.listen(port, () => {
