@@ -13,7 +13,6 @@ export const AuthProvider = ({ children }: any) => {
         const { data: response } = await httpGet(`/user/login`);
         const [status, message, data] = response;
         if (data) {
-            console.log(data);
             setIsLoggedIn(true);
             navigate("/dashboard");
         }

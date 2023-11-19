@@ -25,22 +25,4 @@ const router = createBrowserRouter(
         </Route>
     )
 );
-
-// {
-//     path: "/",
-//     element: <MainPage />,
-//     errorElement: <ErrorPage />,
-//     children: [
-//         { path: "", element: <Navigate to={"dashboard"} /> },
-//         {
-//             path: "dashboard",
-//             element: <ProtectedRoute>Hello world!</ProtectedRoute>,
-//         },
-//     ],
-// },
-// {
-//     path: "login",
-//     element: <LoginPage />,
-// },
-
 export default router;
