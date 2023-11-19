@@ -1,7 +1,7 @@
-import { ReactNode, useContext } from "react";
+import { useContext } from "react";
 import { Navigate, useLocation } from "react-router-dom";
-import { AuthContextType } from "../types/authcontext.type";
 import { AuthContext } from "../provider/Auth.provider";
+import { AuthContextType } from "../types/authcontext.type";
 
 interface Props {
     children?: any;
