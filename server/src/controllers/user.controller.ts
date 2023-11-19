@@ -76,7 +76,7 @@ class UserController {
                         expiresIn: "1h",
                     }
                 );
-                
+
                 (req.session as ISession).token = token;
                 (req.session as ISession).user = {
                     id: validatedUser.id,
@@ -92,6 +92,25 @@ class UserController {
             }
         } catch (error) {
             res.status(400).json(["FAIL", (error as any).message, error]);
+        }
+    }
+
+    async checkLogin(req: Request, res: Response, next: NextFunction) {
+        const user = (req.session as ISession).user;
+        res.status(200).json(["SUCCESS", "Is logged", user]);
+    }
+
+    async logout(req: Request, res: Response, next: NextFunction) {
+        if (req.session) {
+            req.session.destroy((err) => {
+                if (err) {
+                    res.status(400).json(["FAIL", "Unable to log out."]);
+                } else {
+                    res.status(200).json(["SUCCESS", "Logout successful."]);
+                }
+            });
+        } else {
+            res.end();
         }
     }
 }

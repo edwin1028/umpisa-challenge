@@ -20,7 +20,7 @@ const Auth = (req: any, res: Response, next: NextFunction) => {
     }
 
     if (!token) {
-        return res.status(401).json(["Unauthorized"]);
+        return res.status(401).json(["FAIL", "Unauthorized"]);
     }
 
     jwt.verify(
@@ -28,7 +28,7 @@ const Auth = (req: any, res: Response, next: NextFunction) => {
         process.env.JWT_KEY as string,
         (err: any, user: any) => {
             if (err) {
-                return res.status(401).json(["Access Forbidden"]);
+                return res.status(401).json(["FAIL", "Access Forbidden."]);
             }
 
             req.user = user;

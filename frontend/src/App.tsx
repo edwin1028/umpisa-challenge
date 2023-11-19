@@ -1,7 +1,8 @@
 import { Button, CssBaseline } from "@mui/material";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
-import { RouterProvider } from "react-router-dom";
+import { BrowserRouter, RouterProvider } from "react-router-dom";
 import router from "./routes/index.route";
+import { AuthProvider } from "./provider/Auth.provider";
 
 const theme = createTheme({
     palette: {

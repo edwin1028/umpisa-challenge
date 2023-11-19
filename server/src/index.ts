@@ -24,9 +24,10 @@ AppDataSource.initialize()
         app.use(
             session({
                 secret: process.env.SESSION_KEY as string,
-                resave: true,
-                saveUninitialized: true,
+                resave: false,
+                saveUninitialized: false,
                 name: "sid",
+                unset: "destroy",
                 cookie: {
                     secure: process.env.NODE_ENV === "production",
                     httpOnly: true,

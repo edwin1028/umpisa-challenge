@@ -11,9 +11,13 @@ import {
     useMediaQuery,
     useTheme,
 } from "@mui/material";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { httpGet, httpPost } from "../../../services/axios.service";
+import { AxiosResponse } from "../../../types/response.type";
+import { AuthContextType } from "../../../types/authcontext.type";
+import { AuthContext } from "../../../provider/Auth.provider";
+import { useNavigate } from "react-router-dom";
 
 type Inputs = {
     email: string;
@@ -21,6 +25,8 @@ type Inputs = {
 };
 
 const LoginPage = () => {
+    const navigate = useNavigate();
+    const authContext = useContext<AuthContextType | null>(AuthContext);
     const [showPassword, setShowPassword] = useState(false);
     const {
         handleSubmit,
@@ -28,17 +34,22 @@ const LoginPage = () => {
         formState: { errors },
     } = useForm<Inputs>({
         defaultValues: {
-            email: "",
-            password: "",
+            email: "edwinbermejo.jr@gmail.com",
+            password: "Asdf!234",
         },
     });
 
     const theme = useTheme();
     const isDownSm = useMediaQuery(theme.breakpoints.down("sm"));
 
-    const onSubmit: SubmitHandler<Inputs> = async (data) => {
-        const response = await httpPost("/user/login", data);
-        console.log(response);
+    const onSubmit: SubmitHandler<Inputs> = async (payload) => {
+        const { data: response } = await httpPost("/user/login", payload);
+        const [status, message, data] = response;
+
+        if (status === "SUCCESS") {
+            authContext?.setIsLoggedIn(true);
+            navigate("/");
+        }
     };
 
     const getUser = async () => {
@@ -46,9 +57,9 @@ const LoginPage = () => {
         console.log(response);
     };
 
-    useEffect(() => {}, []);
-
-    return (
+    return !authContext?.isLoggedIn ? (
+        <p>Redirecting...</p>
+    ) : (
         <Box
             onSubmit={handleSubmit(onSubmit)}
             component="form"
@@ -186,21 +197,6 @@ const LoginPage = () => {
                         size="large"
                     >
                         Log in
-                    </Button>
-
-                    <Button
-                        onClick={getUser}
-                        type="button"
-                        sx={{
-                            mt: 4,
-                            fontSize: 16,
-                            textTransform: "none",
-                        }}
-                        fullWidth
-                        variant="contained"
-                        size="large"
-                    >
-                        Get User
                     </Button>
                 </Box>
             </Paper>
