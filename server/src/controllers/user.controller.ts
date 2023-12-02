@@ -5,6 +5,7 @@ import { User } from "../entity/User";
 import { decrypt, hash, randomizeSalt } from "../utilities";
 import jwt from "jsonwebtoken";
 import { ISession } from "../interfaces/session.interface";
+import { UserSetting } from "../entity/UserSetting";
 
 class UserController {
     async get(req: Request, res: Response, next: NextFunction) {
@@ -65,6 +66,17 @@ class UserController {
                     password: salted,
                 });
 
+                const userSetting = await AppDataSource.getRepository(
+                    UserSetting
+                ).findOne({
+                    relations: ["user"],
+                    where: {
+                        user: {
+                            id: validatedUser?.id,
+                        },
+                    },
+                });
+
                 if (!validatedUser) {
                     throw new Error("Username or password does not match.");
                 }
@@ -85,7 +97,7 @@ class UserController {
                 res.status(200).json([
                     "SUCCESS",
                     `Welcome back ${validatedUser.email}!`,
-                    { ...validatedUser },
+                    { ...validatedUser, setting: userSetting?.setting },
                 ]); // status, message, data
             } else {
                 throw new Error("Username or password does not match.");

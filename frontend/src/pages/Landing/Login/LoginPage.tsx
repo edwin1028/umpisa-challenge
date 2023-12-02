@@ -1,7 +1,7 @@
 import { Visibility, VisibilityOff } from "@mui/icons-material";
+import { LoadingButton } from "@mui/lab";
 import {
     Box,
-    Button,
     CircularProgress,
     IconButton,
     InputAdornment,
@@ -10,15 +10,15 @@ import {
     Typography,
     colors,
     useMediaQuery,
-    useTheme,
+    useTheme
 } from "@mui/material";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../../../provider/Auth.provider";
 import { httpPost } from "../../../services/axios.service";
 import { AuthContextType } from "../../../types/authcontext.type";
-import { LoadingButton } from "@mui/lab";
+import { ToastProps } from "../../../types/toast.type";
 
 type Inputs = {
     email: string;
@@ -57,7 +57,13 @@ const LoginPage = () => {
                 authContext?.setIsLoggedIn(false);
             }
         } catch (error: any) {
-            console.log(error?.message);
+            const [, message] = error;
+            authContext?.handleOpenToast({
+                open: true,
+                message,
+                handleClose: authContext.handleCloseToast,
+                severity: "error",
+            } as ToastProps);
         }
         setIsLoading(false);
     };

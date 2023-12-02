@@ -6,6 +6,13 @@ const instance = axios.create({
     withCredentials: true,
 });
 
+instance.interceptors.response.use(
+    (response) => response,
+    (error) => {
+        return Promise.reject(error?.response?.data);
+    }
+);
+
 const httpGet = async (url: string) => {
     return await instance.get(url);
 };

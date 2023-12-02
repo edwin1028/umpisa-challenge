@@ -1,10 +1,5 @@
-import {
-    Entity,
-    PrimaryGeneratedColumn,
-    Column,
-    Timestamp,
-    Index,
-} from "typeorm";
+import { Column, Entity, PrimaryGeneratedColumn, Timestamp } from "typeorm";
+import { UserSetting } from "./UserSetting";
 
 @Entity("users")
 export class User {
