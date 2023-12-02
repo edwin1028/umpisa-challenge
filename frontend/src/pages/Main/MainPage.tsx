@@ -41,7 +41,13 @@ export default function MainPage(props: Props) {
 
     const drawer = (
         <div>
-            <Toolbar>
+            <Toolbar
+                sx={(theme) => ({
+                    [theme.breakpoints.down("md")]: {
+                        display: "none",
+                    },
+                })}
+            >
                 <Typography variant="h6" noWrap component="div">
                     {process.env.REACT_APP_NAME}
                 </Typography>
@@ -111,6 +117,16 @@ export default function MainPage(props: Props) {
                     >
                         <MenuIcon />
                     </IconButton>
+
+                    <Typography
+                        sx={{ display: { sm: "none" } }}
+                        variant="h6"
+                        noWrap
+                        component="div"
+                    >
+                        {process.env.REACT_APP_NAME}
+                    </Typography>
+
                     <Box
                         flex={1}
                         display={"flex"}
