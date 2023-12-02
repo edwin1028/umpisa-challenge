@@ -10,7 +10,7 @@ import {
     Typography,
     colors,
     useMediaQuery,
-    useTheme
+    useTheme,
 } from "@mui/material";
 import { useContext, useState } from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
@@ -36,8 +36,8 @@ const LoginPage = () => {
         formState: { errors },
     } = useForm<Inputs>({
         defaultValues: {
-            email: "",
-            password: "",
+            email: "admin@umpisa.com",
+            password: "Asdf!234",
         },
     });
 
@@ -51,6 +51,11 @@ const LoginPage = () => {
             const [status, message, data] = response;
 
             if (status === "SUCCESS") {
+                localStorage.setItem(
+                    "themeMode",
+                    data?.setting?.theme_mode || "light"
+                );
+                authContext?.setThemeMode(data?.setting?.theme_mode || "light");
                 authContext?.setIsLoggedIn(true);
                 navigate("/");
             } else {
