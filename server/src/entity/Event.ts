@@ -26,6 +26,9 @@ export class Event {
     @Column("json")
     type!: object;
 
+    @Column("json")
+    tickets!: object;
+
     @Column({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" })
     created_at!: Timestamp;
 

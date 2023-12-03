@@ -1,5 +1,5 @@
 import { Add } from "@mui/icons-material";
-import { Box, Fab, Tooltip } from "@mui/material";
+import { Box, Fab, Grid, Tooltip } from "@mui/material";
 import React, { useContext, useState } from "react";
 import {
     APPBAR_HEIGHT,
@@ -10,11 +10,15 @@ import { AuthContextType } from "../../../types/authcontext.type";
 import NewEventDialog from "./NewEvent.dialog";
 import { httpGet } from "../../../services/axios.service";
 import { ErrorMessage } from "../../../utilities/error.util";
+import EventCard from "../../../component/EventCard";
+import { Masonry } from "@mui/lab";
 
 export default function MyEventsPage({ name }: any) {
     const authContext = useContext<AuthContextType | null>(AuthContext);
     const [openEventDialog, setOpenEventDialog] = useState(false);
     const [eventTypes, setEventTypes] = useState([]);
+    const [events, setEvents] = useState([]);
+    const [refreshList, setRefreshList] = useState(false);
 
     const handleCloseEventDialog = (
         event: React.MouseEvent<HTMLButtonElement>,
@@ -29,12 +33,17 @@ export default function MyEventsPage({ name }: any) {
         try {
             const { data: response } = await httpGet(`/eventType`);
             const [, , data] = response;
-            console.log(data);
-            if (data) {
-                setEventTypes(data);
-            } else {
-                setEventTypes([]);
-            }
+            setEventTypes(data || []);
+        } catch (error) {
+            ErrorMessage(authContext, error);
+        }
+    };
+
+    const getEvents = async () => {
+        try {
+            const { data: response } = await httpGet(`/myEvents`);
+            const [, , data] = response;
+            setEvents(data || []);
         } catch (error) {
             ErrorMessage(authContext, error);
         }
@@ -43,23 +52,57 @@ export default function MyEventsPage({ name }: any) {
     React.useEffect(() => {
         authContext?.setPage(name);
         getEventTypes();
+        getEvents();
     }, []);
 
+    React.useEffect(() => {
+        if (refreshList) {
+            getEvents();
+        }
+
+        return () => setRefreshList(false);
+    }, [refreshList]);
+
     return (
-        <Box
-            sx={(theme) => ({
-                position: "relative",
-                overflowY: "auto",
-                p: 3,
-                height: `calc(100% - ${APPBAR_HEIGHT}px)`,
-                [theme.breakpoints.down("sm")]: {
-                    height: `calc(100% - ${APPBAR_HEIGHT_MOBILE}px)`,
-                },
-            })}
-        >
-            {/* MAIN CONTENT */}
-            <Box>Show list here</Box>
-            {/* END MAIN CONTENT */}
+        <>
+            <Box
+                sx={(theme) => ({
+                    position: "relative",
+                    overflowY: "auto",
+                    overflowX: "hidden",
+                    p: 3,
+                    height: `calc(100% - ${APPBAR_HEIGHT}px)`,
+                    [theme.breakpoints.down("sm")]: {
+                        height: `calc(100% - ${APPBAR_HEIGHT_MOBILE}px)`,
+                    },
+                })}
+            >
+                {/* MAIN CONTENT */}
+                <Box
+                    display={"flex"}
+                    flexDirection={"row"}
+                    flex={1}
+                    justifyContent={"center"}
+                >
+                    <Masonry
+                        columns={{ xs: 1, sm: 1, md: 3, lg: 3, xl: 6 }}
+                        spacing={2}
+                    >
+                        {events.map((event: any, index) => (
+                            <EventCard {...event} />
+                        ))}
+                    </Masonry>
+                </Box>
+                {/* END MAIN CONTENT */}
+
+                <NewEventDialog
+                    open={openEventDialog}
+                    handleClose={handleCloseEventDialog}
+                    eventTypes={eventTypes}
+                    authContext={authContext}
+                    handleShouldRefreshList={setRefreshList}
+                />
+            </Box>
 
             {/* FAB BUTTON */}
             <Box
@@ -79,13 +122,6 @@ export default function MyEventsPage({ name }: any) {
                     </Fab>
                 </Tooltip>
             </Box>
-
-            <NewEventDialog
-                open={openEventDialog}
-                handleClose={handleCloseEventDialog}
-                eventTypes={eventTypes}
-                authContext={authContext}
-            />
-        </Box>
+        </>
     );
 }

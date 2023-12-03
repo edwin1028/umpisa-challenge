@@ -1,3 +1,11 @@
+export type TicketType = {
+    ticket_id: string;
+    ticket_name: string;
+    ticket_qty: number;
+    ticket_qty_init: number;
+    ticket_price: number;
+}
+
 export type EventFormType = {
     title: string;
     description: string;
@@ -6,4 +14,5 @@ export type EventFormType = {
     end_date: Date | string;
     venue: object[];
     type: object;
+    tickets: TicketType[];
 }

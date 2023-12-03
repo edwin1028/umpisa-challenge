@@ -1,3 +1,5 @@
+import { Add, Delete } from "@mui/icons-material";
+import { LoadingButton } from "@mui/lab";
 import {
     Autocomplete,
     Box,
@@ -6,26 +8,37 @@ import {
     DialogActions,
     DialogContent,
     DialogTitle,
+    Divider,
     Grid,
+    IconButton,
+    InputAdornment,
     Slide,
     TextField,
+    Tooltip,
+    Typography,
     colors,
 } from "@mui/material";
 import { TransitionProps } from "@mui/material/transitions";
 import React, { useState } from "react";
-import { Controller, SubmitHandler, useForm } from "react-hook-form";
-import { EventFormType } from "../../../types/event-form.type";
-import { AuthContextType } from "../../../types/authcontext.type";
-import { ErrorMessage } from "../../../utilities/error.util";
+import {
+    Controller,
+    SubmitHandler,
+    useFieldArray,
+    useForm,
+} from "react-hook-form";
 import { httpPost } from "../../../services/axios.service";
+import { AuthContextType } from "../../../types/authcontext.type";
+import { EventFormType, TicketType } from "../../../types/event-form.type";
 import { ToastProps } from "../../../types/toast.type";
-import { LoadingButton } from "@mui/lab";
+import { ErrorMessage } from "../../../utilities/error.util";
+import { v4 as uuidv4 } from "uuid";
 
 type Props = {
     open: boolean;
     handleClose: any;
     eventTypes: Array<any>;
     authContext: AuthContextType | null;
+    handleShouldRefreshList: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 const Transition = React.forwardRef(function Transition(
@@ -42,6 +55,7 @@ export default function NewEventDialog({
     handleClose,
     eventTypes,
     authContext,
+    handleShouldRefreshList,
 }: Props) {
     const [saving, setSaving] = useState(false);
     const {
@@ -49,6 +63,7 @@ export default function NewEventDialog({
         control,
         formState: { errors },
         setValue,
+        getValues,
         reset,
     } = useForm<EventFormType>({
         defaultValues: {
@@ -57,13 +72,19 @@ export default function NewEventDialog({
             start_date: "",
             end_date: "",
             type: {},
+            tickets: [{ ...({} as TicketType), ticket_id: uuidv4() }],
         },
+    });
+
+    const { fields, append, remove } = useFieldArray({
+        control,
+        name: "tickets",
     });
 
     const onSubmit: SubmitHandler<EventFormType> = async (payload) => {
         setSaving(true);
         try {
-            const { data: response } = await httpPost("/events", payload);
+            const { data: response } = await httpPost("/myEvents", payload);
             const [, message, data] = response;
 
             authContext?.handleOpenToast({
@@ -72,7 +93,11 @@ export default function NewEventDialog({
                 handleClose: authContext.handleCloseToast,
                 severity: "success",
             } as ToastProps);
-            reset();
+            reset({
+                tickets: [],
+            });
+            append({} as TicketType);
+            handleShouldRefreshList(true);
         } catch (error) {
             ErrorMessage(authContext, error);
         }
@@ -274,9 +299,236 @@ export default function NewEventDialog({
                                 />
                             )}
                         />
+
+                        <Box
+                            flex={1}
+                            display={"flex"}
+                            flexDirection={"row"}
+                            alignItems={"center"}
+                            justifyContent={"space-between"}
+                        >
+                            <Typography
+                                component="span"
+                                variant="body2"
+                                sx={{
+                                    fontWeight: "bold",
+                                }}
+                            >
+                                Tickets
+                            </Typography>
+                            <Tooltip title="Add Ticket" enterDelay={500}>
+                                <IconButton
+                                    onClick={() => {
+                                        let props: TicketType =
+                                            {} as TicketType;
+                                        props = {
+                                            ...props,
+                                            ticket_id: uuidv4(),
+                                        };
+                                        append(props);
+                                    }}
+                                    color="primary"
+                                >
+                                    <Add />
+                                </IconButton>
+                            </Tooltip>
+                        </Box>
+                        {fields.map((field, index) => {
+                            const ticketCount = fields.length;
+                            const showDivider = ticketCount !== index + 1;
+                            return (
+                                <Box key={field.ticket_id}>
+                                    <Controller
+                                        name={
+                                            `tickets.${index}.ticket_name` as const
+                                        }
+                                        control={control}
+                                        rules={{
+                                            required: {
+                                                value: true,
+                                                message:
+                                                    "Ticket name is required",
+                                            },
+                                        }}
+                                        render={({ field }) => {
+                                            return (
+                                                <TextField
+                                                    {...field}
+                                                    required
+                                                    sx={{
+                                                        mt: 2,
+                                                    }}
+                                                    fullWidth
+                                                    label="Ticket Name"
+                                                    variant="outlined"
+                                                    InputProps={{
+                                                        endAdornment: (
+                                                            <InputAdornment position="end">
+                                                                <IconButton
+                                                                    disabled={
+                                                                        ticketCount <=
+                                                                        1
+                                                                    }
+                                                                    edge="end"
+                                                                    color="error"
+                                                                    onClick={() => {
+                                                                        console.log(
+                                                                            index
+                                                                        );
+                                                                        remove(
+                                                                            index
+                                                                        );
+                                                                    }}
+                                                                >
+                                                                    <Delete />
+                                                                </IconButton>
+                                                            </InputAdornment>
+                                                        ),
+                                                    }}
+                                                    helperText={
+                                                        errors?.tickets?.[index]
+                                                            ?.ticket_name
+                                                            ? errors?.tickets?.[
+                                                                  index
+                                                              ]?.ticket_name
+                                                                  ?.message
+                                                            : " "
+                                                    }
+                                                    {...(errors?.tickets?.[
+                                                        index
+                                                    ]?.ticket_name
+                                                        ? {
+                                                              error: true,
+                                                          }
+                                                        : {})}
+                                                />
+                                            );
+                                        }}
+                                    />
+
+                                    <Grid container spacing={2}>
+                                        <Grid item xs={12} sm={12} md={6}>
+                                            <Controller
+                                                name={
+                                                    `tickets.${index}.ticket_qty` as const
+                                                }
+                                                control={control}
+                                                rules={{
+                                                    required: {
+                                                        value: true,
+                                                        message:
+                                                            "Quantity is required",
+                                                    },
+                                                }}
+                                                render={({ field }) => (
+                                                    <TextField
+                                                        {...field}
+                                                        required
+                                                        sx={{
+                                                            mt: 2,
+                                                        }}
+                                                        fullWidth
+                                                        label="Quantity"
+                                                        variant="outlined"
+                                                        InputProps={{
+                                                            inputProps: {
+                                                                style: {
+                                                                    textAlign:
+                                                                        "center",
+                                                                },
+                                                            },
+                                                        }}
+                                                        helperText={
+                                                            errors?.tickets?.[
+                                                                index
+                                                            ]?.ticket_qty
+                                                                ? errors
+                                                                      ?.tickets?.[
+                                                                      index
+                                                                  ]?.ticket_qty
+                                                                      ?.message
+                                                                : " "
+                                                        }
+                                                        {...(errors?.tickets?.[
+                                                            index
+                                                        ]?.ticket_qty
+                                                            ? {
+                                                                  error: true,
+                                                              }
+                                                            : {})}
+                                                    />
+                                                )}
+                                            />
+                                        </Grid>
+                                        <Grid item xs={12} sm={12} md={6}>
+                                            <Controller
+                                                name={
+                                                    `tickets.${index}.ticket_price` as const
+                                                }
+                                                control={control}
+                                                rules={{
+                                                    required: {
+                                                        value: true,
+                                                        message:
+                                                            "Price is required",
+                                                    },
+                                                }}
+                                                render={({ field }) => (
+                                                    <TextField
+                                                        {...field}
+                                                        required
+                                                        sx={{
+                                                            mt: 2,
+                                                        }}
+                                                        fullWidth
+                                                        label="Price"
+                                                        variant="outlined"
+                                                        InputProps={{
+                                                            inputProps: {
+                                                                style: {
+                                                                    textAlign:
+                                                                        "right",
+                                                                },
+                                                            },
+                                                            startAdornment: (
+                                                                <InputAdornment position="start">
+                                                                    &#8369;
+                                                                </InputAdornment>
+                                                            ),
+                                                        }}
+                                                        helperText={
+                                                            errors?.tickets?.[
+                                                                index
+                                                            ]?.ticket_price
+                                                                ? errors
+                                                                      ?.tickets?.[
+                                                                      index
+                                                                  ]
+                                                                      ?.ticket_price
+                                                                      ?.message
+                                                                : " "
+                                                        }
+                                                        {...(errors?.tickets?.[
+                                                            index
+                                                        ]?.ticket_price
+                                                            ? {
+                                                                  error: true,
+                                                              }
+                                                            : {})}
+                                                    />
+                                                )}
+                                            />
+                                        </Grid>
+                                    </Grid>
+                                    {showDivider && (
+                                        <Divider sx={{ mt: 3, mb: 1 }} />
+                                    )}
+                                </Box>
+                            );
+                        })}
                     </Box>
                 </DialogContent>
-                <DialogActions>
+                <DialogActions sx={{ mx: 1 }}>
                     <Button
                         onClick={handleClose}
                         sx={{

@@ -1,4 +1,10 @@
-import InboxIcon from "@mui/icons-material/MoveToInbox";
+import {
+    ConfirmationNumber,
+    Dashboard,
+    Event,
+    EventNote,
+    ShoppingBag
+} from "@mui/icons-material";
 
 export const navs = [
     {
@@ -9,13 +15,13 @@ export const navs = [
                 key: "dashboard",
                 title: "Dashboard",
                 path: "dashboard",
-                icon: <InboxIcon />,
+                icon: <Dashboard />,
             },
             {
                 key: "events",
                 title: "Events",
                 path: "events",
-                icon: <InboxIcon />,
+                icon: <Event />,
             },
         ],
     },
@@ -27,19 +33,19 @@ export const navs = [
                 key: "my-events",
                 title: "My Events",
                 path: "my-events",
-                icon: <InboxIcon />,
+                icon: <EventNote />,
             },
             {
                 key: "my-tickets",
                 title: "My Tickets",
                 path: "my-tickets",
-                icon: <InboxIcon />,
+                icon: <ConfirmationNumber />,
             },
             {
                 key: "my-cart",
                 title: "My Cart",
                 path: "my-cart",
-                icon: <InboxIcon />,
+                icon: <ShoppingBag />,
             },
         ],
     },

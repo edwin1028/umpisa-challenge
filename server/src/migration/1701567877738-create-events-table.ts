@@ -47,6 +47,10 @@ export class CreateEventsTable1701567877738 implements MigrationInterface {
                         isNullable: true,
                     },
                     {
+                        name: "tickets",
+                        type: "json",
+                    },
+                    {
                         name: "created_at",
                         type: "timestamp",
                         default: "CURRENT_TIMESTAMP",
