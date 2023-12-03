@@ -23,6 +23,7 @@ export const AuthProvider = ({ children }: any) => {
     const [toastConfig, setToastConfig] = useState<ToastProps>(
         {} as ToastProps
     );
+    const [page, setPage] = useState('');
     const navigate = useNavigate();
 
     const handleCloseToast = () => {
@@ -71,6 +72,8 @@ export const AuthProvider = ({ children }: any) => {
                 handleOpenToast,
                 handleCloseToast,
                 setThemeMode,
+                page,
+                setPage,
             }}
         >
             <ThemeProvider theme={theme}>

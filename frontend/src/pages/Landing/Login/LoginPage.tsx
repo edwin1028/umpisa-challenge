@@ -19,6 +19,7 @@ import { AuthContext } from "../../../provider/Auth.provider";
 import { httpPost } from "../../../services/axios.service";
 import { AuthContextType } from "../../../types/authcontext.type";
 import { ToastProps } from "../../../types/toast.type";
+import { ErrorMessage } from "../../../utilities/error.util";
 
 type Inputs = {
     email: string;
@@ -62,13 +63,7 @@ const LoginPage = () => {
                 authContext?.setIsLoggedIn(false);
             }
         } catch (error: any) {
-            const [, message] = error;
-            authContext?.handleOpenToast({
-                open: true,
-                message,
-                handleClose: authContext.handleCloseToast,
-                severity: "error",
-            } as ToastProps);
+            ErrorMessage(authContext, error);
         }
         setIsLoading(false);
     };

@@ -10,6 +10,10 @@ import LoginPage from "../pages/Landing/Login/LoginPage";
 import { ProtectedRoute } from "./ProtectedRoute";
 import { AuthLayout } from "../provider/AuthLayout";
 import DashboardPage from "../pages/Main/Dashboard/DashboardPage";
+import MyEventsPage from "../pages/Main/MyEvents/MyEventsPage";
+import EventsPage from "../pages/Main/Events/EventsPage";
+import MyTicketsPage from "../pages/Main/MyTickets/MyTicketsPage";
+import MyCartPage from "../pages/Main/MyCart/MyCartPage";
 
 const router = createBrowserRouter(
     createRoutesFromElements(
@@ -25,7 +29,39 @@ const router = createBrowserRouter(
                         path="dashboard"
                         element={
                             <ProtectedRoute>
-                                <DashboardPage />
+                                <DashboardPage name="Dashboard" />
+                            </ProtectedRoute>
+                        }
+                    />
+                    <Route
+                        path="events"
+                        element={
+                            <ProtectedRoute>
+                                <EventsPage name="Events" />
+                            </ProtectedRoute>
+                        }
+                    />
+                    <Route
+                        path="my-events"
+                        element={
+                            <ProtectedRoute>
+                                <MyEventsPage name="My Events" />
+                            </ProtectedRoute>
+                        }
+                    />
+                    <Route
+                        path="my-tickets"
+                        element={
+                            <ProtectedRoute>
+                                <MyTicketsPage name="My Tickets" />
+                            </ProtectedRoute>
+                        }
+                    />
+                    <Route
+                        path="my-cart"
+                        element={
+                            <ProtectedRoute>
+                                <MyCartPage name="My Cart" />
                             </ProtectedRoute>
                         }
                     />

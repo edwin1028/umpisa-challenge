@@ -1,7 +1,5 @@
 import { Logout } from "@mui/icons-material";
-import MailIcon from "@mui/icons-material/Mail";
 import MenuIcon from "@mui/icons-material/Menu";
-import InboxIcon from "@mui/icons-material/MoveToInbox";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -16,9 +14,10 @@ import ListItemText from "@mui/material/ListItemText";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import * as React from "react";
-import { AuthContextType } from "../../types/authcontext.type";
+import { Link, Navigate, Outlet } from "react-router-dom";
+import { navs } from "../../constants/navs";
 import { AuthContext } from "../../provider/Auth.provider";
-import { Navigate, Outlet } from "react-router-dom";
+import { AuthContextType } from "../../types/authcontext.type";
 
 const drawerWidth = 240;
 
@@ -43,7 +42,7 @@ export default function MainPage(props: Props) {
         <div>
             <Toolbar
                 sx={(theme) => ({
-                    [theme.breakpoints.down("md")]: {
+                    [theme.breakpoints.down("sm")]: {
                         display: "none",
                     },
                 })}
@@ -52,44 +51,30 @@ export default function MainPage(props: Props) {
                     {process.env.REACT_APP_NAME}
                 </Typography>
             </Toolbar>
-            <List>
-                {["Dashboard", "Organizer", "Events"].map((text, index) => (
-                    <ListItem key={text} disablePadding>
-                        <ListItemButton>
-                            <ListItemIcon>
-                                {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-                            </ListItemIcon>
-                            <ListItemText primary={text} />
-                        </ListItemButton>
-                    </ListItem>
-                ))}
-            </List>
-            <Divider />
-            <List>
-                {["My Cart", "My Tickets"].map((text, index) => (
-                    <ListItem key={text} disablePadding>
-                        <ListItemButton>
-                            <ListItemIcon>
-                                {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-                            </ListItemIcon>
-                            <ListItemText primary={text} />
-                        </ListItemButton>
-                    </ListItem>
-                ))}
-            </List>
-            <Divider />
-            <List>
-                {["Settings"].map((text, index) => (
-                    <ListItem key={text} disablePadding>
-                        <ListItemButton>
-                            <ListItemIcon>
-                                {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-                            </ListItemIcon>
-                            <ListItemText primary={text} />
-                        </ListItemButton>
-                    </ListItem>
-                ))}
-            </List>
+            {navs.map((group, index) => {
+                return (
+                    <React.Fragment key={group.key}>
+                        <List>
+                            {group.navs.map((nav) => {
+                                return (
+                                    <ListItem key={nav.key} disablePadding>
+                                        <ListItemButton
+                                            component={Link}
+                                            to={nav.path}
+                                        >
+                                            <ListItemIcon>
+                                                {nav.icon}
+                                            </ListItemIcon>
+                                            <ListItemText primary={nav.title} />
+                                        </ListItemButton>
+                                    </ListItem>
+                                );
+                            })}
+                        </List>
+                        {navs.length !== index + 1 && <Divider />}
+                    </React.Fragment>
+                );
+            })}
         </div>
     );
 
@@ -98,7 +83,7 @@ export default function MainPage(props: Props) {
         window !== undefined ? () => window().document.body : undefined;
 
     return authContext?.isLoggedIn ? (
-        <Box sx={{ display: "flex" }}>
+        <Box sx={{ display: "flex", height: "100%" }}>
             <CssBaseline />
             <AppBar
                 position="fixed"
@@ -118,13 +103,8 @@ export default function MainPage(props: Props) {
                         <MenuIcon />
                     </IconButton>
 
-                    <Typography
-                        sx={{ display: { sm: "none" } }}
-                        variant="h6"
-                        noWrap
-                        component="div"
-                    >
-                        {process.env.REACT_APP_NAME}
+                    <Typography variant="h6" noWrap component="div">
+                        {authContext.page}
                     </Typography>
 
                     <Box
@@ -185,8 +165,8 @@ export default function MainPage(props: Props) {
                 component="main"
                 sx={{
                     flexGrow: 1,
-                    p: 3,
                     width: { sm: `calc(100% - ${drawerWidth}px)` },
+                    overflowY: "hidden",
                 }}
             >
                 <Toolbar />

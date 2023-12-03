@@ -8,4 +8,6 @@ export type AuthContextType = {
     handleOpenToast: Function;
     handleCloseToast: Function;
     setThemeMode: React.Dispatch<React.SetStateAction<any | null>>;
+    page: string;
+    setPage: React.Dispatch<React.SetStateAction<string>>;
 };

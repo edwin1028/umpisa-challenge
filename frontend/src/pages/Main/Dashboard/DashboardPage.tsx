@@ -1,8 +1,31 @@
-import { Typography } from "@mui/material";
+import React, { useContext } from "react";
+import { Box, Typography } from "@mui/material";
+import { AuthContext } from "../../../provider/Auth.provider";
+import { AuthContextType } from "../../../types/authcontext.type";
+import {
+    APPBAR_HEIGHT,
+    APPBAR_HEIGHT_MOBILE,
+} from "../../../constants/any.constant";
 
-export default function DashboardPage() {
+export default function DashboardPage({ name }: any) {
+    const authContext = useContext<AuthContextType | null>(AuthContext);
+
+    React.useEffect(() => {
+        authContext?.setPage(name);
+    }, []);
+
     return (
-        <>
+        <Box
+            sx={(theme) => ({
+                position: "relative",
+                overflowY: "auto",
+                height: `calc(100% - ${APPBAR_HEIGHT}px)`,
+                p: 3,
+                [theme.breakpoints.down("sm")]: {
+                    height: `calc(100% - ${APPBAR_HEIGHT_MOBILE}px)`,
+                },
+            })}
+        >
             <Typography paragraph>
                 Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
                 eiusmod tempor incididunt ut labore et dolore magna aliqua.
@@ -34,6 +57,6 @@ export default function DashboardPage() {
                 eleifend. Commodo viverra maecenas accumsan lacus vel facilisis.
                 Nulla posuere sollicitudin aliquam ultrices sagittis orci a.
             </Typography>
-        </>
+        </Box>
     );
 }
