@@ -21,4 +21,8 @@ const httpPost = async (url: string, data?: any, config?: any) => {
     return await instance.post(url, data, config);
 };
 
-export { httpGet, httpPost };
+const httpPut = async (url: string, data?: any, config?: any) => {
+    return await instance.put(url, data, config);
+};
+
+export { httpGet, httpPost, httpPut };

@@ -22,6 +22,9 @@ class MyEventController {
                         created_by:
                             ((req.session as ISession).user as any)?.id || null,
                     },
+                    order: {
+                        created_at: "DESC",
+                    },
                 });
             }
 
@@ -65,6 +68,51 @@ class MyEventController {
                 "SUCCESS",
                 "Event successfully created.",
                 {},
+            ]); // status, message, data
+        } catch (error) {
+            res.status(400).json(["FAIL", (error as any).message, error]);
+        }
+    }
+
+    async update(req: Request, res: Response, next: NextFunction) {
+        const {
+            title,
+            description,
+            images_url,
+            start_date,
+            end_date,
+            venue,
+            type,
+            tickets,
+        } = req.body;
+
+        const { id } = req.params;
+        try {
+            const event = await AppDataSource.getRepository(Event).update(
+                {
+                    id: Number(id),
+                },
+                {
+                    title,
+                    description,
+                    date_start: moment(start_date).format(
+                        "YYYY-MM-DD HH:mm:ss"
+                    ),
+                    date_end: moment(end_date).format("YYYY-MM-DD HH:mm:ss"),
+                    type: [type?.id],
+                    tickets: tickets.map((ticket: any) => ({
+                        ...ticket,
+                        ticket_qty_init: ticket?.ticket_qty,
+                    })),
+                    updated_by:
+                        ((req.session as ISession).user as any)?.id || null,
+                }
+            );
+
+            res.status(200).json([
+                "SUCCESS",
+                "Event successfully updated.",
+                event,
             ]); // status, message, data
         } catch (error) {
             res.status(400).json(["FAIL", (error as any).message, error]);

@@ -1,5 +1,23 @@
-import { Add } from "@mui/icons-material";
-import { Box, Fab, Grid, Tooltip } from "@mui/material";
+import {
+    Add,
+    ArrowForward,
+    ArrowRight,
+    Event,
+    EventBusy,
+    Search,
+} from "@mui/icons-material";
+import {
+    Box,
+    Fab,
+    Grid,
+    IconButton,
+    InputAdornment,
+    LinearProgress,
+    TextField,
+    Tooltip,
+    Typography,
+    colors,
+} from "@mui/material";
 import React, { useContext, useState } from "react";
 import {
     APPBAR_HEIGHT,
@@ -10,8 +28,10 @@ import { AuthContextType } from "../../../types/authcontext.type";
 import NewEventDialog from "./NewEvent.dialog";
 import { httpGet } from "../../../services/axios.service";
 import { ErrorMessage } from "../../../utilities/error.util";
-import EventCard from "../../../component/EventCard";
+import EventCard from "../../../component/MyEventCard";
 import { Masonry } from "@mui/lab";
+import { AnyNaptrRecord } from "dns";
+import { EventType } from "../../../types/event.type";
 
 export default function MyEventsPage({ name }: any) {
     const authContext = useContext<AuthContextType | null>(AuthContext);
@@ -19,6 +39,8 @@ export default function MyEventsPage({ name }: any) {
     const [eventTypes, setEventTypes] = useState([]);
     const [events, setEvents] = useState([]);
     const [refreshList, setRefreshList] = useState(false);
+    const [loading, setLoading] = useState(false);
+    const [event, setEvent] = useState<EventType | null>({} as EventType);
 
     const handleCloseEventDialog = (
         event: React.MouseEvent<HTMLButtonElement>,
@@ -27,6 +49,7 @@ export default function MyEventsPage({ name }: any) {
         if (reason !== "backdropClick") {
             setOpenEventDialog(false);
         }
+        setEvent(null);
     };
 
     const getEventTypes = async () => {
@@ -40,13 +63,24 @@ export default function MyEventsPage({ name }: any) {
     };
 
     const getEvents = async () => {
+        setLoading(true);
         try {
             const { data: response } = await httpGet(`/myEvents`);
             const [, , data] = response;
             setEvents(data || []);
+            setLoading(false);
         } catch (error) {
+            setLoading(false);
             ErrorMessage(authContext, error);
         }
+    };
+
+    const handleEdit = (
+        event: React.MouseEvent<HTMLButtonElement>,
+        myEvent: EventType
+    ) => {
+        setEvent(myEvent);
+        setOpenEventDialog(true);
     };
 
     React.useEffect(() => {
@@ -79,6 +113,52 @@ export default function MyEventsPage({ name }: any) {
             >
                 {/* MAIN CONTENT */}
                 <Box
+                    sx={{
+                        mb: 4,
+                    }}
+                >
+                    <TextField
+                        placeholder="Search"
+                        fullWidth
+                        InputProps={{
+                            startAdornment: (
+                                <InputAdornment position="start">
+                                    <Search />
+                                </InputAdornment>
+                            ),
+                            endAdornment: (
+                                <InputAdornment position="end">
+                                    <IconButton>
+                                        <ArrowForward />
+                                    </IconButton>
+                                </InputAdornment>
+                            ),
+                        }}
+                    />
+                    {loading && <LinearProgress />}
+                </Box>
+
+                {!loading && events.length <= 0 && (
+                    <Box
+                        display={"flex"}
+                        flexDirection={"row"}
+                        flex={1}
+                        justifyContent={"flex-start"}
+                        alignItems={"center"}
+                    >
+                        <Typography
+                            color={colors.grey[500]}
+                            variant="h6"
+                            sx={{
+                                fontWeight: "normal",
+                            }}
+                        >
+                            No Event to show.
+                        </Typography>
+                    </Box>
+                )}
+
+                <Box
                     display={"flex"}
                     flexDirection={"row"}
                     flex={1}
@@ -89,7 +169,16 @@ export default function MyEventsPage({ name }: any) {
                         spacing={2}
                     >
                         {events.map((event: any, index) => (
-                            <EventCard {...event} />
+                            <EventCard
+                                key={event.id}
+                                {...event}
+                                handleEdit={(e: React.MouseEvent<any>) => {
+                                    handleEdit(e, event);
+                                }}
+                                handleDelete={(e: React.MouseEvent<any>) => {
+                                    // handleEdit(e, event);
+                                }}
+                            />
                         ))}
                     </Masonry>
                 </Box>
@@ -101,6 +190,7 @@ export default function MyEventsPage({ name }: any) {
                     eventTypes={eventTypes}
                     authContext={authContext}
                     handleShouldRefreshList={setRefreshList}
+                    data={event}
                 />
             </Box>
 

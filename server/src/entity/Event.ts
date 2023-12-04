@@ -15,10 +15,10 @@ export class Event {
     images_url!: object;
 
     @Column("timestamp")
-    date_start!: Timestamp;
+    date_start!: Date;
 
     @Column("timestamp")
-    date_end!: Timestamp;
+    date_end!: Date;
 
     @Column("json", {nullable: true})
     venue!: object;

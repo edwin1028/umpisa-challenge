@@ -10,6 +10,7 @@ dotenv.config();
 AppDataSource.initialize()
     .then(() => {
         console.log("Data Source has been initialized!");
+        process.env.TZ = 'Asia/Manila';
         const app: Application = express();
         const port = process.env.PORT || 8000;
         const routePrefix = process.env.API_V1 || "/api/v1";
