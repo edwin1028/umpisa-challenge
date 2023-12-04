@@ -1,4 +1,4 @@
-import { MigrationInterface, QueryRunner, Table } from "typeorm"
+import { MigrationInterface, QueryRunner, Table, TableForeignKey } from "typeorm"
 
 export class CreateEventsTable1701567877738 implements MigrationInterface {
 
@@ -43,8 +43,7 @@ export class CreateEventsTable1701567877738 implements MigrationInterface {
                     },
                     {
                         name: "type",
-                        type: "json",
-                        isNullable: true,
+                        type: "int",
                     },
                     {
                         name: "tickets",
@@ -74,9 +73,26 @@ export class CreateEventsTable1701567877738 implements MigrationInterface {
             }),
             true
         );
+
+        await queryRunner.createForeignKey(
+            "events",
+            new TableForeignKey({
+                columnNames: ["type"],
+                referencedColumnNames: ["id"],
+                referencedTableName: "event_type",
+                onDelete: "CASCADE",
+            })
+        );
     }
 
     public async down(queryRunner: QueryRunner): Promise<void> {
+        const table = await queryRunner.getTable("event");
+        const foreignKey = table?.foreignKeys.find(
+            (fk) => fk.columnNames.indexOf("type") !== -1
+        );
+        if (foreignKey) {
+            await queryRunner.dropForeignKey("event", foreignKey);
+        }
         await queryRunner.dropTable("events");
     }
 

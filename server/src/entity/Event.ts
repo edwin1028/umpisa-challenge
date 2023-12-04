@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn, Timestamp } from "typeorm";
+import { Column, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn, Timestamp } from "typeorm";
+import { EventType } from "./EventType";
 
 @Entity("events")
 export class Event {
@@ -22,9 +23,10 @@ export class Event {
 
     @Column("json", {nullable: true})
     venue!: object;
-    
-    @Column("json")
-    type!: object;
+
+    @OneToOne(() => EventType)
+    @JoinColumn({ name: "type" })
+    type!: EventType;
 
     @Column("json")
     tickets!: object;

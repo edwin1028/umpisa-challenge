@@ -1,4 +1,4 @@
-import { Logout } from "@mui/icons-material";
+import { AccountCircle, Logout, Person } from "@mui/icons-material";
 import MenuIcon from "@mui/icons-material/Menu";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
@@ -18,6 +18,7 @@ import { Link, Navigate, Outlet } from "react-router-dom";
 import { navs } from "../../constants/navs";
 import { AuthContext } from "../../provider/Auth.provider";
 import { AuthContextType } from "../../types/authcontext.type";
+import { Avatar, Menu, MenuItem, colors } from "@mui/material";
 
 const drawerWidth = 240;
 
@@ -33,6 +34,8 @@ export default function MainPage(props: Props) {
     const { window } = props;
     const [mobileOpen, setMobileOpen] = React.useState(false);
     const authContext = React.useContext<AuthContextType | null>(AuthContext);
+    const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+    const open = Boolean(anchorEl);
 
     const handleDrawerToggle = () => {
         setMobileOpen(!mobileOpen);
@@ -82,6 +85,13 @@ export default function MainPage(props: Props) {
     const container =
         window !== undefined ? () => window().document.body : undefined;
 
+    const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+        setAnchorEl(event.currentTarget);
+    };
+    const handleClose = () => {
+        setAnchorEl(null);
+    };
+
     return authContext?.isLoggedIn ? (
         <Box sx={{ display: "flex", height: "100%" }}>
             <CssBaseline />
@@ -113,13 +123,77 @@ export default function MainPage(props: Props) {
                         flexDirection={"row"}
                         justifyContent={"flex-end"}
                     >
-                        <IconButton
-                            onClick={() => {
-                                authContext?.logOut();
+                        <IconButton onClick={handleClick}>
+                            <AccountCircle fontSize="large" />
+                        </IconButton>
+                        <Menu
+                            id="basic-menu"
+                            anchorEl={anchorEl}
+                            open={open}
+                            onClose={handleClose}
+                            MenuListProps={{
+                                "aria-labelledby": "basic-button",
+                            }}
+                            PaperProps={{
+                                elevation: 0,
+                                sx: {
+                                    width: "200px",
+                                    overflow: "visible",
+                                    filter: "drop-shadow(0px 2px 8px rgba(0,0,0,0.32))",
+                                    mt: 0,
+                                    "& .MuiAvatar-root": {
+                                        width: 32,
+                                        height: 32,
+                                        ml: -0.5,
+                                        mr: 1,
+                                    },
+                                    "&:before": {
+                                        content: '""',
+                                        display: "block",
+                                        position: "absolute",
+                                        top: 0,
+                                        right: 20,
+                                        width: 10,
+                                        height: 10,
+                                        bgcolor: "background.paper",
+                                        transform:
+                                            "translateY(-50%) rotate(45deg)",
+                                        zIndex: 0,
+                                    },
+                                },
+                            }}
+                            transformOrigin={{
+                                horizontal: "right",
+                                vertical: "top",
+                            }}
+                            anchorOrigin={{
+                                horizontal: "right",
+                                vertical: "bottom",
                             }}
                         >
-                            <Logout />
-                        </IconButton>
+                            <MenuItem
+                                onClick={(e: React.MouseEvent<any>) => {
+                                    handleClose();
+                                }}
+                            >
+                                <ListItemIcon>
+                                    <Person fontSize="small" />
+                                </ListItemIcon>
+                                <ListItemText>Profile</ListItemText>
+                            </MenuItem>
+                            <Divider />
+                            <MenuItem
+                                onClick={(e: React.MouseEvent<any>) => {
+                                    authContext?.logOut();
+                                    handleClose();
+                                }}
+                            >
+                                <ListItemIcon>
+                                    <Logout fontSize="small" />
+                                </ListItemIcon>
+                                <ListItemText>Log out</ListItemText>
+                            </MenuItem>
+                        </Menu>
                     </Box>
                 </Toolbar>
             </AppBar>

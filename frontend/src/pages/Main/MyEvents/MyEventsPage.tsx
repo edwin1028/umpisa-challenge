@@ -1,37 +1,32 @@
 import {
     Add,
     ArrowForward,
-    ArrowRight,
-    Event,
-    EventBusy,
-    Search,
+    Search
 } from "@mui/icons-material";
+import { Masonry } from "@mui/lab";
 import {
     Box,
     Fab,
-    Grid,
     IconButton,
     InputAdornment,
     LinearProgress,
     TextField,
     Tooltip,
     Typography,
-    colors,
+    colors
 } from "@mui/material";
 import React, { useContext, useState } from "react";
+import MyEventCard from "../../../component/MyEventCard";
 import {
     APPBAR_HEIGHT,
     APPBAR_HEIGHT_MOBILE,
 } from "../../../constants/any.constant";
 import { AuthContext } from "../../../provider/Auth.provider";
-import { AuthContextType } from "../../../types/authcontext.type";
-import NewEventDialog from "./NewEvent.dialog";
 import { httpGet } from "../../../services/axios.service";
-import { ErrorMessage } from "../../../utilities/error.util";
-import EventCard from "../../../component/MyEventCard";
-import { Masonry } from "@mui/lab";
-import { AnyNaptrRecord } from "dns";
+import { AuthContextType } from "../../../types/authcontext.type";
 import { EventType } from "../../../types/event.type";
+import { ErrorMessage } from "../../../utilities/error.util";
+import NewEventDialog from "./NewEvent.dialog";
 
 export default function MyEventsPage({ name }: any) {
     const authContext = useContext<AuthContextType | null>(AuthContext);
@@ -169,7 +164,7 @@ export default function MyEventsPage({ name }: any) {
                         spacing={2}
                     >
                         {events.map((event: any, index) => (
-                            <EventCard
+                            <MyEventCard
                                 key={event.id}
                                 {...event}
                                 handleEdit={(e: React.MouseEvent<any>) => {

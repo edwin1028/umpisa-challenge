@@ -13,11 +13,14 @@ class MyEventController {
             let events: any = [];
 
             if (id) {
-                events = await AppDataSource.getRepository(Event).findOneBy({
-                    id: parseInt(id),
+                events = await AppDataSource.getRepository(Event).findOne({
+                    where: {
+                        id: parseInt(id),
+                    }
                 });
             } else {
                 events = await AppDataSource.getRepository(Event).find({
+                    relations: ["type"],
                     where: {
                         created_by:
                             ((req.session as ISession).user as any)?.id || null,
@@ -56,7 +59,7 @@ class MyEventController {
                 description,
                 date_start: moment(start_date).format("YYYY-MM-DD HH:mm:ss"),
                 date_end: moment(end_date).format("YYYY-MM-DD HH:mm:ss"),
-                type: [type?.id],
+                type: type?.id,
                 tickets: tickets.map((ticket: any) => ({
                     ...ticket,
                     ticket_qty_init: ticket?.ticket_qty,
@@ -99,7 +102,7 @@ class MyEventController {
                         "YYYY-MM-DD HH:mm:ss"
                     ),
                     date_end: moment(end_date).format("YYYY-MM-DD HH:mm:ss"),
-                    type: [type?.id],
+                    type: type?.id,
                     tickets: tickets.map((ticket: any) => ({
                         ...ticket,
                         ticket_qty_init: ticket?.ticket_qty,

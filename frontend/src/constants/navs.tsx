@@ -3,6 +3,7 @@ import {
     Dashboard,
     Event,
     EventNote,
+    Favorite,
     ShoppingBag
 } from "@mui/icons-material";
 
@@ -34,6 +35,12 @@ export const navs = [
                 title: "My Events",
                 path: "my-events",
                 icon: <EventNote />,
+            },
+            {
+                key: "my-favorites",
+                title: "My Favorites",
+                path: "my-favorites",
+                icon: <Favorite />,
             },
             {
                 key: "my-tickets",

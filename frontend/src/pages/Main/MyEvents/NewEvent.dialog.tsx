@@ -88,7 +88,7 @@ export default function NewEventDialog({
             start_date: "",
             end_date: "",
             type: {},
-            tickets: [{ ...({} as TicketType), ticket_id: uuidv4() }],
+            tickets: [],
         },
     });
 
@@ -156,7 +156,7 @@ export default function NewEventDialog({
                     data as any;
 
                 const eventType = eventTypes.find(
-                    (event: EventType) => event.id === data?.type[0]
+                    (event: EventType) => event.id === data?.type?.id
                 );
                 setValue("type", eventType);
                 reset({
@@ -175,7 +175,7 @@ export default function NewEventDialog({
                 });
             } else {
                 reset({
-                    tickets: [{} as TicketType],
+                    tickets: [new ClsTicketType()],
                 });
                 setFormLabels({
                     title: "Create Event",

@@ -9,6 +9,7 @@ import {
 import {
     Avatar,
     Box,
+    Button,
     Card,
     CardActions,
     CardContent,
@@ -74,9 +75,6 @@ export default function EventCard(props: Props) {
                 }
                 action={
                     <Box>
-                        <IconButton aria-label="settings" onClick={handleClick}>
-                            <MoreVert />
-                        </IconButton>
                         <Menu
                             id="basic-menu"
                             anchorEl={anchorEl}
@@ -164,12 +162,7 @@ export default function EventCard(props: Props) {
                 </Typography>
             </CardContent>
             <CardActions disableSpacing>
-                <IconButton aria-label="add to favorites">
-                    <Favorite />
-                </IconButton>
-                <IconButton aria-label="share">
-                    <Share />
-                </IconButton>
+                <Button fullWidth>Add to Cart</Button>
             </CardActions>
         </Card>
     );
