@@ -5,7 +5,7 @@ import { User } from "../entity/User";
 import { Event } from "../entity/Event";
 import moment from "moment-timezone";
 import { ISession } from "../interfaces/session.interface";
-import { MoreThan } from "typeorm";
+import { LessThan, LessThanOrEqual, MoreThan, MoreThanOrEqual } from "typeorm";
 
 class EventController {
     async get(req: Request, res: Response, next: NextFunction) {
@@ -17,11 +17,14 @@ class EventController {
                 events = await AppDataSource.getRepository(Event).findOne({
                     where: {
                         id: parseInt(id),
-                    }
+                    },
                 });
             } else {
                 events = await AppDataSource.getRepository(Event).find({
                     relations: ["type"],
+                    where: {
+                        publish_date: LessThanOrEqual(moment().toDate()),
+                    },
                     order: {
                         created_at: "DESC",
                     },

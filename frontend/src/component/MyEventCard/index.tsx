@@ -14,6 +14,7 @@ import {
     CardContent,
     CardHeader,
     CardMedia,
+    Chip,
     IconButton,
     IconButtonProps,
     ListItemIcon,
@@ -23,9 +24,9 @@ import {
     Typography,
     colors,
 } from "@mui/material";
-import moment from "moment";
 import { useEffect, useState } from "react";
 import { formatDisplayDate } from "../../utilities/general.util";
+import moment from "moment";
 
 interface ExpandMoreProps extends IconButtonProps {
     expand: boolean;
@@ -39,6 +40,7 @@ type Props = {
     handleDelete: React.MouseEventHandler<any>;
     handleEdit: React.MouseEventHandler<any>;
     type: any;
+    publish_date: Date;
 };
 
 export default function EventCard(props: Props) {
@@ -170,6 +172,21 @@ export default function EventCard(props: Props) {
                 <IconButton aria-label="share">
                     <Share />
                 </IconButton>
+
+                {moment().isSameOrAfter(moment(props.publish_date)) && (
+                    <Box
+                        display="flex"
+                        flex={1}
+                        flexDirection={"row"}
+                        justifyContent={"flex-end"}
+                    >
+                        <Chip
+                            color="success"
+                            label="Published"
+                            variant="outlined"
+                        />
+                    </Box>
+                )}
             </CardActions>
         </Card>
     );

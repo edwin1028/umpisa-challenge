@@ -15,4 +15,5 @@ export type EventFormType = {
     venue: object[];
     type: object;
     tickets: TicketType[];
+    publish_date: Date | string;
 }

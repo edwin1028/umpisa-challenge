@@ -89,6 +89,7 @@ export default function NewEventDialog({
             end_date: "",
             type: {},
             tickets: [],
+            publish_date: "",
         },
     });
 
@@ -138,6 +139,10 @@ export default function NewEventDialog({
         event: React.MouseEvent<any> | null,
         reason: string
     ) => {
+        if (reason === "backdropClick") {
+            return;
+        }
+
         const newTicket = new ClsTicketType();
         reset({
             tickets: [newTicket],
@@ -381,6 +386,47 @@ export default function NewEventDialog({
                         )}
                     />
 
+                    <Grid container>
+                        <Grid item xs={12} sm={12} md={6}>
+                            <Controller
+                                name="publish_date"
+                                control={control}
+                                rules={{
+                                    required: {
+                                        value: true,
+                                        message: "Publish Date is required",
+                                    },
+                                }}
+                                render={({ field }) => (
+                                    <TextField
+                                        required
+                                        {...field}
+                                        sx={{
+                                            mt: 2,
+                                        }}
+                                        fullWidth
+                                        type="datetime-local"
+                                        label="Publish Date"
+                                        variant="outlined"
+                                        helperText={
+                                            errors.publish_date
+                                                ? errors.publish_date.message
+                                                : " "
+                                        }
+                                        {...(errors.publish_date
+                                            ? {
+                                                  error: true,
+                                              }
+                                            : {})}
+                                        InputLabelProps={{
+                                            shrink: true,
+                                        }}
+                                    />
+                                )}
+                            />
+                        </Grid>
+                    </Grid>
+
                     <Box
                         flex={1}
                         display={"flex"}
@@ -441,6 +487,7 @@ export default function NewEventDialog({
                                                 fullWidth
                                                 label="Ticket Name"
                                                 variant="outlined"
+                                                placeholder="Early Bird/Regular/VIP/General Admission"
                                                 InputProps={{
                                                     endAdornment: (
                                                         <InputAdornment position="end">

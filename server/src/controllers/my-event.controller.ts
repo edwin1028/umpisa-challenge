@@ -16,7 +16,7 @@ class MyEventController {
                 events = await AppDataSource.getRepository(Event).findOne({
                     where: {
                         id: parseInt(id),
-                    }
+                    },
                 });
             } else {
                 events = await AppDataSource.getRepository(Event).find({
@@ -51,6 +51,7 @@ class MyEventController {
             venue,
             type,
             tickets,
+            publish_date,
         } = req.body;
 
         try {
@@ -59,6 +60,9 @@ class MyEventController {
                 description,
                 date_start: moment(start_date).format("YYYY-MM-DD HH:mm:ss"),
                 date_end: moment(end_date).format("YYYY-MM-DD HH:mm:ss"),
+                publish_date: moment(publish_date).format(
+                    "YYYY-MM-DD HH:mm:ss"
+                ),
                 type: type?.id,
                 tickets: tickets.map((ticket: any) => ({
                     ...ticket,
@@ -87,6 +91,7 @@ class MyEventController {
             venue,
             type,
             tickets,
+            publish_date,
         } = req.body;
 
         const { id } = req.params;
@@ -102,6 +107,9 @@ class MyEventController {
                         "YYYY-MM-DD HH:mm:ss"
                     ),
                     date_end: moment(end_date).format("YYYY-MM-DD HH:mm:ss"),
+                    publish_date: moment(publish_date).format(
+                        "YYYY-MM-DD HH:mm:ss"
+                    ),
                     type: type?.id,
                     tickets: tickets.map((ticket: any) => ({
                         ...ticket,

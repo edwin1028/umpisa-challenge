@@ -6,10 +6,14 @@ import Toast from "../component/Toast/Toast";
 import { ToastProps } from "../types/toast.type";
 import { ThemeProvider } from "@emotion/react";
 import { createTheme, CssBaseline } from "@mui/material";
+import { useDispatch, useSelector } from "react-redux";
+import { setUserData } from "../redux/reducer/User";
 
 export const AuthContext = createContext<AuthContextType | null>(null);
 
 export const AuthProvider = ({ children }: any) => {
+    const dispatch = useDispatch();
+    const user = useSelector((state: any) => state.user.userData);
     const [themeMode, setThemeMode] = useState<any>("light");
     const theme = useMemo(() => {
         return createTheme({
@@ -23,7 +27,7 @@ export const AuthProvider = ({ children }: any) => {
     const [toastConfig, setToastConfig] = useState<ToastProps>(
         {} as ToastProps
     );
-    const [page, setPage] = useState('');
+    const [page, setPage] = useState("");
     const navigate = useNavigate();
 
     const handleCloseToast = () => {
@@ -51,16 +55,18 @@ export const AuthProvider = ({ children }: any) => {
 
     const logOut = async () => {
         await httpGet(`/user/logout`);
+        dispatch(setUserData(null));
         setIsLoggedIn(false);
         navigate("/login");
     };
 
+    const changeThemeMode = (mode: string) => {
+        setThemeMode(mode);
+    };
+
     useEffect(() => {
         checkIfLoggedIn();
-
-        const storedThemeMode = localStorage.getItem("themeMode");
-        localStorage.setItem("themeMode", storedThemeMode || "light");
-        setThemeMode(storedThemeMode);
+        changeThemeMode(user?.setting?.theme_mode);
     }, []);
 
     return (
@@ -71,7 +77,7 @@ export const AuthProvider = ({ children }: any) => {
                 logOut,
                 handleOpenToast,
                 handleCloseToast,
-                setThemeMode,
+                changeThemeMode,
                 page,
                 setPage,
             }}

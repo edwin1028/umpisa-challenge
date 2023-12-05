@@ -1,8 +1,4 @@
-import {
-    Add,
-    ArrowForward,
-    Search
-} from "@mui/icons-material";
+import { Add, ArrowForward, Search } from "@mui/icons-material";
 import { Masonry } from "@mui/lab";
 import {
     Box,
@@ -13,7 +9,7 @@ import {
     TextField,
     Tooltip,
     Typography,
-    colors
+    colors,
 } from "@mui/material";
 import React, { useContext, useState } from "react";
 import MyEventCard from "../../../component/MyEventCard";
@@ -27,6 +23,7 @@ import { AuthContextType } from "../../../types/authcontext.type";
 import { EventType } from "../../../types/event.type";
 import { ErrorMessage } from "../../../utilities/error.util";
 import NewEventDialog from "./NewEvent.dialog";
+import { ConfirmationDialog } from "../../../component/ConfirmDialog";
 
 export default function MyEventsPage({ name }: any) {
     const authContext = useContext<AuthContextType | null>(AuthContext);
@@ -76,6 +73,14 @@ export default function MyEventsPage({ name }: any) {
     ) => {
         setEvent(myEvent);
         setOpenEventDialog(true);
+    };
+
+    const handleCloseConfirm = () => {
+        alert("close");
+    };
+
+    const handleDelete = () => {
+        alert("delete");
     };
 
     React.useEffect(() => {
@@ -171,7 +176,6 @@ export default function MyEventsPage({ name }: any) {
                                     handleEdit(e, event);
                                 }}
                                 handleDelete={(e: React.MouseEvent<any>) => {
-                                    // handleEdit(e, event);
                                 }}
                             />
                         ))}
@@ -207,6 +211,14 @@ export default function MyEventsPage({ name }: any) {
                     </Fab>
                 </Tooltip>
             </Box>
+
+            {/* <ConfirmationDialog
+                open={confirmConfig.open}
+                title={confirmConfig.title}
+                message={confirmConfig.message}
+                onClose={confirmConfig.onClose as any}
+                onOkay={confirmConfig.onOkay as any}
+            /> */}
         </>
     );
 }

@@ -1,5 +1,12 @@
-import { AccountCircle, Logout, Person } from "@mui/icons-material";
+import {
+    AccountCircle,
+    DarkMode,
+    LightMode,
+    Logout,
+    Person,
+} from "@mui/icons-material";
 import MenuIcon from "@mui/icons-material/Menu";
+import { Menu, MenuItem } from "@mui/material";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -14,11 +21,14 @@ import ListItemText from "@mui/material/ListItemText";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import * as React from "react";
+import { useSelector } from "react-redux";
 import { Link, Navigate, Outlet } from "react-router-dom";
 import { navs } from "../../constants/navs";
 import { AuthContext } from "../../provider/Auth.provider";
 import { AuthContextType } from "../../types/authcontext.type";
-import { Avatar, Menu, MenuItem, colors } from "@mui/material";
+import { useDispatch } from "react-redux";
+import { setUserData } from "../../redux/reducer/User";
+import { httpPost } from "../../services/axios.service";
 
 const drawerWidth = 240;
 
@@ -36,6 +46,8 @@ export default function MainPage(props: Props) {
     const authContext = React.useContext<AuthContextType | null>(AuthContext);
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);
+    const dispatch = useDispatch();
+    const user = useSelector((state: any) => state.user.userData);
 
     const handleDrawerToggle = () => {
         setMobileOpen(!mobileOpen);
@@ -92,6 +104,26 @@ export default function MainPage(props: Props) {
         setAnchorEl(null);
     };
 
+    const handleOnChangeThemeMode = async () => {
+        const mode = user?.setting?.theme_mode === "dark" ? "light" : "dark";
+        authContext?.changeThemeMode(mode);
+        const currentUserData = { ...user };
+        dispatch(
+            setUserData({
+                ...currentUserData,
+                setting: {
+                    theme_mode: mode,
+                },
+            })
+        );
+
+        await httpPost(`/user/update-setting/${currentUserData?.id}`, {
+            setting: {
+                theme_mode: mode,
+            },
+        });
+    };
+
     return authContext?.isLoggedIn ? (
         <Box sx={{ display: "flex", height: "100%" }}>
             <CssBaseline />
@@ -122,10 +154,23 @@ export default function MainPage(props: Props) {
                         display={"flex"}
                         flexDirection={"row"}
                         justifyContent={"flex-end"}
+                        alignItems={"center"}
                     >
-                        <IconButton onClick={handleClick}>
-                            <AccountCircle fontSize="large" />
-                        </IconButton>
+                        <Box sx={{ mr: 1 }}>
+                            <IconButton onClick={handleOnChangeThemeMode}>
+                                {user?.setting?.theme_mode === "dark" ? (
+                                    <LightMode fontSize="small" />
+                                ) : (
+                                    <DarkMode fontSize="small" />
+                                )}
+                            </IconButton>
+                        </Box>
+
+                        <Box>
+                            <IconButton onClick={handleClick}>
+                                <AccountCircle fontSize="large" />
+                            </IconButton>
+                        </Box>
                         <Menu
                             id="basic-menu"
                             anchorEl={anchorEl}

@@ -46,6 +46,10 @@ export class CreateEventsTable1701567877738 implements MigrationInterface {
                         type: "int",
                     },
                     {
+                        name: "publish_date",
+                        type: "timestamp",
+                    },
+                    {
                         name: "tickets",
                         type: "json",
                     },

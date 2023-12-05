@@ -28,6 +28,9 @@ export class Event {
     @JoinColumn({ name: "type" })
     type!: EventType;
 
+    @Column("timestamp")
+    publish_date!: Date;
+
     @Column("json")
     tickets!: object;
 

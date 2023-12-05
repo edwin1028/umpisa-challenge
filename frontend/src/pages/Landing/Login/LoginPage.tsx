@@ -20,6 +20,8 @@ import { httpPost } from "../../../services/axios.service";
 import { AuthContextType } from "../../../types/authcontext.type";
 import { ToastProps } from "../../../types/toast.type";
 import { ErrorMessage } from "../../../utilities/error.util";
+import { useDispatch } from "react-redux";
+import { setUserData } from "../../../redux/reducer/User";
 
 type Inputs = {
     email: string;
@@ -31,6 +33,7 @@ const LoginPage = () => {
     const authContext = useContext<AuthContextType | null>(AuthContext);
     const [showPassword, setShowPassword] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
+    const dispatch = useDispatch();
     const {
         handleSubmit,
         control,
@@ -52,11 +55,8 @@ const LoginPage = () => {
             const [status, message, data] = response;
 
             if (status === "SUCCESS") {
-                localStorage.setItem(
-                    "themeMode",
-                    data?.setting?.theme_mode || "light"
-                );
-                authContext?.setThemeMode(data?.setting?.theme_mode || "light");
+                dispatch(setUserData(data));
+                authContext?.changeThemeMode(data?.setting?.theme_mode || "light");
                 authContext?.setIsLoggedIn(true);
                 navigate("/");
             } else {

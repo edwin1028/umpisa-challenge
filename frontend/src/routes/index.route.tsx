@@ -14,6 +14,7 @@ import MyEventsPage from "../pages/Main/MyEvents/MyEventsPage";
 import EventsPage from "../pages/Main/Events/EventsPage";
 import MyTicketsPage from "../pages/Main/MyTickets/MyTicketsPage";
 import MyCartPage from "../pages/Main/MyCart/MyCartPage";
+import MyFavoritesPage from "../pages/Main/MyFavorites/MyFavoritesPage";
 
 const router = createBrowserRouter(
     createRoutesFromElements(
@@ -46,6 +47,14 @@ const router = createBrowserRouter(
                         element={
                             <ProtectedRoute>
                                 <MyEventsPage name="My Events" />
+                            </ProtectedRoute>
+                        }
+                    />
+                    <Route
+                        path="my-favorites"
+                        element={
+                            <ProtectedRoute>
+                                <MyFavoritesPage name="My Favorites" />
                             </ProtectedRoute>
                         }
                     />
