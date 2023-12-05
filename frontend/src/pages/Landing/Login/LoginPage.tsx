@@ -40,8 +40,8 @@ const LoginPage = () => {
         formState: { errors },
     } = useForm<Inputs>({
         defaultValues: {
-            email: "admin@umpisa.com",
-            password: "Asdf!234",
+            email: "",
+            password: "",
         },
     });
 
