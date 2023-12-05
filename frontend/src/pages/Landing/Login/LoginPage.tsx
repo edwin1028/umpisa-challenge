@@ -10,7 +10,7 @@ import {
     Typography,
     colors,
     useMediaQuery,
-    useTheme
+    useTheme,
 } from "@mui/material";
 import { useContext, useState } from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
@@ -19,6 +19,9 @@ import { AuthContext } from "../../../provider/Auth.provider";
 import { httpPost } from "../../../services/axios.service";
 import { AuthContextType } from "../../../types/authcontext.type";
 import { ToastProps } from "../../../types/toast.type";
+import { ErrorMessage } from "../../../utilities/error.util";
+import { useDispatch } from "react-redux";
+import { setUserData } from "../../../redux/reducer/User";
 
 type Inputs = {
     email: string;
@@ -30,6 +33,7 @@ const LoginPage = () => {
     const authContext = useContext<AuthContextType | null>(AuthContext);
     const [showPassword, setShowPassword] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
+    const dispatch = useDispatch();
     const {
         handleSubmit,
         control,
@@ -51,19 +55,15 @@ const LoginPage = () => {
             const [status, message, data] = response;
 
             if (status === "SUCCESS") {
+                dispatch(setUserData(data));
+                authContext?.changeThemeMode(data?.setting?.theme_mode || "light");
                 authContext?.setIsLoggedIn(true);
                 navigate("/");
             } else {
                 authContext?.setIsLoggedIn(false);
             }
         } catch (error: any) {
-            const [, message] = error;
-            authContext?.handleOpenToast({
-                open: true,
-                message,
-                handleClose: authContext.handleCloseToast,
-                severity: "error",
-            } as ToastProps);
+            ErrorMessage(authContext, error);
         }
         setIsLoading(false);
     };

@@ -1,21 +1,18 @@
-import { Button, CssBaseline } from "@mui/material";
-import { ThemeProvider, createTheme } from "@mui/material/styles";
-import { BrowserRouter, RouterProvider } from "react-router-dom";
+import { RouterProvider } from "react-router-dom";
 import router from "./routes/index.route";
-import { AuthProvider } from "./provider/Auth.provider";
-
-const theme = createTheme({
-    palette: {
-        mode: "dark",
-    },
-});
+import { Provider } from "react-redux";
+import reduxStore from "./redux/store";
+import { PersistGate } from "redux-persist/integration/react";
 
 const App = () => {
+    const { store, persistor } = reduxStore();
+
     return (
-        <ThemeProvider theme={theme}>
-            <CssBaseline />
-            <RouterProvider router={router} />
-        </ThemeProvider>
+        <Provider store={store}>
+            <PersistGate loading={null} persistor={persistor}>
+                <RouterProvider router={router} />
+            </PersistGate>
+        </Provider>
     );
 };
 

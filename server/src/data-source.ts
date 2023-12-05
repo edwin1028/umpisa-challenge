@@ -3,6 +3,8 @@ import { DataSource } from "typeorm";
 import { User } from "./entity/User";
 import dotenv from "dotenv";
 import { UserSetting } from "./entity/UserSetting";
+import { Event } from "./entity/Event";
+import { EventType } from "./entity/EventType";
 
 dotenv.config();
 export const AppDataSource = new DataSource({
@@ -14,7 +16,7 @@ export const AppDataSource = new DataSource({
     database: process.env.DB_NAME,
     synchronize: (process.env.NODE_ENV as string) === "development",
     logging: (process.env.NODE_ENV as string) === "development",
-    entities: [User, UserSetting],
+    entities: [User, UserSetting, Event, EventType],
     subscribers: [],
     migrations: [__dirname + "/migration/*.ts"],
     migrationsRun: false,

@@ -7,4 +7,7 @@ export type AuthContextType = {
     logOut: Function;
     handleOpenToast: Function;
     handleCloseToast: Function;
+    changeThemeMode: Function;
+    page: string;
+    setPage: React.Dispatch<React.SetStateAction<string>>;
 };

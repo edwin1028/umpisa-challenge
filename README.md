@@ -18,5 +18,5 @@
 4. run `docker-compose -p umpisa up -d`
 5. run `npm run typeorm migration:run -- -d src/data-source.ts`
 6. run `npm run dev`
-7. Using postman, create a post request to `http://localhost:8000/api/v1/user`, Bearer token `KmpqlTqcfHlOoQvDjwK7tK2oKgBImkchqpaOsqWCxDx8lkRi5gMm9dQSUAitB20i`, body `{"email": "desired-email", "password": "desired-password" }`
+7. Using postman, you need to create a user by creating a post request to `http://localhost:8000/api/v1/user`, Bearer token `KmpqlTqcfHlOoQvDjwK7tK2oKgBImkchqpaOsqWCxDx8lkRi5gMm9dQSUAitB20i`, body `{"email": "desired-email", "password": "desired-password" }`
 8. 
