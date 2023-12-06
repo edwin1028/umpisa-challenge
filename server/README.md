@@ -10,4 +10,5 @@
 5. run `npm run typeorm migration:run -- -d src/data-source.ts`
 6. run `npm run build && npm start`
 7. Using postman, create a post request to `http://localhost:8000/api/v1/user`, Bearer token `KmpqlTqcfHlOoQvDjwK7tK2oKgBImkchqpaOsqWCxDx8lkRi5gMm9dQSUAitB20i`, body `{"email": "desired-email", "password": "desired-password" }`
-8. 
+8. Using postman, create a post request to `http://localhost:8000/api/v1/eventType`, needed to seed Event Type table
+9. 
