@@ -130,23 +130,38 @@ class UserController {
         const { setting } = req.body;
         const { id } = req.params;
         try {
-            const userSetting = await AppDataSource.getRepository(
+            const userSettingFind = await AppDataSource.getRepository(
                 UserSetting
-            ).update(
-                {
+            ).findOneBy({
+                user: {
+                    id: Number(id),
+                },
+            });
+
+            if (userSettingFind?.id) {
+                await AppDataSource.getRepository(UserSetting).update(
+                    {
+                        user: {
+                            id: Number(id),
+                        },
+                    },
+                    {
+                        setting,
+                    }
+                );
+            } else {
+                await AppDataSource.getRepository(UserSetting).save({
                     user: {
                         id: Number(id),
                     },
-                },
-                {
                     setting,
-                }
-            );
+                });
+            }
 
             res.status(200).json([
                 "SUCCESS",
                 "User setting successfully updated.",
-                userSetting,
+                {},
             ]); // status, message, data
         } catch (error) {
             res.status(400).json(["FAIL", (error as any).message, error]);

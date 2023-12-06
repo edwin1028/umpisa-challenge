@@ -5,5 +5,6 @@ import { Auth } from "../middlewares";
 const eventTypeRoute = Router();
 
 eventTypeRoute.get("/", Auth, EventTypeController.get);
+eventTypeRoute.post("/", Auth, EventTypeController.seed);
 
 export default eventTypeRoute;
