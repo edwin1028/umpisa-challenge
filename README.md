@@ -26,3 +26,9 @@
 7. Using POSTMAN, create a post request to `http://localhost:8000/api/v1/user`, Bearer token `KmpqlTqcfHlOoQvDjwK7tK2oKgBImkchqpaOsqWCxDx8lkRi5gMm9dQSUAitB20i`, body `{"email": "desired-email", "password": "desired-password" }`
 8. Using postman, create a post request to `http://localhost:8000/api/v1/eventType`, needed to seed Event Type table
 9. 
+
+
+#### Page Info / Pages w/ content only are:
+
+1. My Events -> Create, Read, Edit event - Delete not working
+2. Events -> shows only events with publish date less or equal to current date
